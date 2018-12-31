@@ -1,0 +1,15 @@
+UP = 'u'
+LEFT = 'l'
+DOWN = 'd'
+RIGHT = 'r'
+WALL = -1
+GHOST = 0
+EMPTY = 1
+PACMAN = 2
+MUNCHIE = 3
+MOVEDICT = {'w':'u', 'a':'l', 's':'d', 'd':'r', 'h':'l','j':'d','k':'u', 'l':'l'}
+YELLOW = (255,255,0)
+WHITE = (255,255,255)
+BLUE = (0,255,255)
+BLACK = (0,0,0)
+PURPLE = (255,0,255)
