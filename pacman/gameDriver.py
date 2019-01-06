@@ -3,6 +3,7 @@ from ghost import *
 from pacman import *
 import pygame
 import sys
+import time
 
 class gameDriver(object):
     '''
@@ -19,10 +20,17 @@ class gameDriver(object):
         if size%2 == 0:
             size += 1
         # Ensure that the size is odd and start a ghost at each corner
+        self.board = Board(size)
         self.size = size
         ghostLocations = [(1,1),(1,size-2),(size-2,size-2), (size-2, 1)]
-        self.board = Board(size)
-        self.ghosts = [Ghost(self.board, elem) for elem in ghostLocations]
+        homeZones = [
+            [[0,0],[len(self.board.board)//2,len(self.board.board)//2]],
+            [[len(self.board.board)//2,0],[len(self.board.board),len(self.board.board)//2]],
+            [[0,len(self.board.board)//2],[len(self.board.board)//2,len(self.board.board)]],
+            [[len(self.board.board)//2,len(self.board.board)//2],[len(self.board.board),len(self.board.board)]]
+                    ]
+
+        self.ghosts = [Ghost(self.board, BLUE, ghostLocations[i], homeZones[i]) for i in range(len(ghostLocations))]
         self.pacman = Pacman(self.board, (size//2,size//2))
         # all internal elements were appropriately allocated so initialize the graphical window
         pygame.init()
@@ -61,7 +69,17 @@ class gameDriver(object):
         # draw the game window
         self.drawGame()
         pygame.display.update()
+        # tic for the games internal clock
+        tic = time.time()
         while GameRunning:
+            toc = time.time()
+            if toc-tic > 1:
+                for ghost in self.ghosts:
+                    ghost.Move(self.screen, self.squareSize, self.radius)
+                tic = toc
+                pygame.display.update()
+                GameRunning = not self.GameOver()
+
             # while the game is running, get all the events
             for event in pygame.event.get():
                 # for each event handle is, if its a quit then quit
