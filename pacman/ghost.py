@@ -22,6 +22,8 @@ class Ghost(object):
         self.board.board[self.X][self.Y] = GHOST
         self.home = homeZone
         self.color = color
+        self.onMunchie = True
+
 
     def HandleMove(self, direction, isWandering, screen, squareSize, radius):
         '''
@@ -29,28 +31,55 @@ class Ghost(object):
         :return:
         '''
         self.board.board[self.X][self.Y] = EMPTY
-        pygame.draw.rect(screen, BLACK, (self.X*squareSize, self.Y*squareSize, squareSize, squareSize))
+        if not self.onMunchie:
+            pygame.draw.rect(screen, BLACK, (self.X*squareSize, self.Y*squareSize, squareSize, squareSize))
+        else:
+            pygame.draw.rect(screen, BLACK, (self.X*squareSize, self.Y*squareSize, squareSize, squareSize))
+            pygame.draw.circle(screen, YELLOW,
+                                       (squareSize*self.X+squareSize//4+radius//2,squareSize*self.Y+squareSize//4+radius//2), radius//2)
+            self.board.board[self.X][self.Y] = MUNCHIE
+
 
         if direction == UP and self.board.board[self.X][self.Y-1] != WALL:
+            if self.board.board[self.X][self.Y-1] == MUNCHIE:
+                self.onMunchie = True
+            else:
+                self.onMunchie = False
             self.board.board[self.X][self.Y-1] = GHOST
             self.Y -= 1
             pygame.draw.circle(screen, self.color, (squareSize*(self.X)+radius,squareSize*(self.Y)+radius), radius)
             return True
+
         elif direction == LEFT and self.board.board[self.X-1][self.Y] != WALL:
+            if self.board.board[self.X-1][self.Y] == MUNCHIE:
+                self.onMunchie = True
+            else:
+                self.onMunchie = False
             self.board.board[self.X-1][self.Y] = GHOST
             self.X -= 1
             pygame.draw.circle(screen, self.color, (squareSize*(self.X)+radius,squareSize*(self.Y)+radius), radius)
             return True
+
         elif direction == DOWN and self.board.board[self.X][self.Y+1] != WALL:
+            if self.board.board[self.X][self.Y+1] == MUNCHIE:
+                self.onMunchie = True
+            else:
+                self.onMunchie = False
             self.board.board[self.X][self.Y+1] = GHOST
             self.Y += 1
             pygame.draw.circle(screen, self.color, (squareSize*(self.X)+radius,squareSize*(self.Y)+radius), radius)
             return True
+
         elif direction == RIGHT and self.board.board[self.X+1][self.Y] != WALL:
+            if self.board.board[self.X+1][self.Y] == MUNCHIE:
+                self.onMunchie = True
+            else:
+                self.onMunchie = False
             self.board.board[self.X+1][self.Y] = GHOST
             self.X += 1
             pygame.draw.circle(screen, self.color, (squareSize*(self.X)+radius,squareSize*(self.Y)+radius), radius)
             return True
+
         else:
             self.board.board[self.X][self.Y] = GHOST
             pygame.draw.circle(screen, self.color, (squareSize*(self.X)+radius,squareSize*(self.Y)+radius), radius)

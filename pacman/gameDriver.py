@@ -53,7 +53,7 @@ class gameDriver(object):
 
     def GameOver(self):
         # if there are no more munchies the pacman wins
-        if (sum(sum(self.board.board == MUNCHIE))) == 0:
+        if (sum(sum(self.board.board == MUNCHIE))) == 0 and sum([ghost.onMunchie for ghost in self.ghosts]) == 0:
             print("Congratulations you found all the munchies")
             return True
         # if there is pacman the game continues
@@ -61,7 +61,7 @@ class gameDriver(object):
             return False
         # if there is no pacman the ghosts win
         print("Oh no, you've been caught by a ghost!")
-        return True
+        return Truea
 
     def playGame(self):
         # manage the game run instance
